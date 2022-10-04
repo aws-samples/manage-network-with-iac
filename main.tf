@@ -7,8 +7,7 @@
 
 # Hub and Spoke architecture
 module "hub_spoke_nvirginia" {
-  source = "aws-ia/network-hubandspoke/aws"
-  version = "1.0.0"
+  source = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
   providers = {
     aws   = aws.awsnvirginia
     awscc = awscc.awsccnvirginia
@@ -175,8 +174,7 @@ module "nvirginia_phz" {
 
 # Hub and Spoke architecture
 module "hub_spoke_ireland" {
-  source = "aws-ia/network-hubandspoke/aws"
-  version = "1.0.0"
+  source = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
   providers = {
     aws   = aws.awsireland
     awscc = awscc.awsccireland
