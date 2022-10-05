@@ -13,15 +13,15 @@ module "hub_spoke_nvirginia" {
     awscc = awscc.awsccnvirginia
   }
 
-  identifier      = var.identifier
+  identifier = var.identifier
   transit_gateway_attributes = {
-    name = "tgw-us-east-1"
-    description = "AWS Transit Gateway - us-east-1"
+    name            = "tgw-us-east-1"
+    description     = "AWS Transit Gateway - us-east-1"
     amazon_side_asn = var.transit_gateway_asn.north_virginia
   }
 
   network_definition = {
-    type = "PREFIX_LIST"
+    type  = "PREFIX_LIST"
     value = aws_ec2_managed_prefix_list.nvirginia_network.id
   }
 
@@ -91,8 +91,8 @@ module "nvirginia_spoke_vpcs" {
 
   subnets = {
     private = {
-      name_prefix              = "private"
-      cidrs                    = each.value.private_subnet_cidrs
+      name_prefix = "private"
+      cidrs       = each.value.private_subnet_cidrs
     }
     transit_gateway = {
       name_prefix                                     = "transit_gateway"
@@ -180,15 +180,15 @@ module "hub_spoke_ireland" {
     awscc = awscc.awsccireland
   }
 
-  identifier      = var.identifier
+  identifier = var.identifier
   transit_gateway_attributes = {
-    name = "tgw-eu-west-1"
-    description = "AWS Transit Gateway - eu-west-1"
+    name            = "tgw-eu-west-1"
+    description     = "AWS Transit Gateway - eu-west-1"
     amazon_side_asn = var.transit_gateway_asn.ireland
   }
 
   network_definition = {
-    type = "PREFIX_LIST"
+    type  = "PREFIX_LIST"
     value = aws_ec2_managed_prefix_list.ireland_network.id
   }
 
@@ -258,8 +258,8 @@ module "ireland_spoke_vpcs" {
 
   subnets = {
     private = {
-      name_prefix              = "private"
-      cidrs                    = each.value.private_subnet_cidrs
+      name_prefix = "private"
+      cidrs       = each.value.private_subnet_cidrs
     }
     transit_gateway = {
       name_prefix                                     = "transit_gateway"

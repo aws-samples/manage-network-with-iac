@@ -24,14 +24,25 @@ variable "aws_regions" {
 
 # Amazon Side ASNs to use in the Transit Gateways
 variable "transit_gateway_asn" {
-  type = map(string)
+  type        = map(string)
   description = "Amazon Side ASNs to apply in the Transit Gateways."
 
   default = {
     north_virginia = 65050
-    ireland = 65051
+    ireland        = 65051
   }
-} 
+}
+
+# AWS Region's Supernet CIDR blocks
+variable "supernet" {
+  type        = map(string)
+  description = "AWS Region Supernet CIDR blocks."
+
+  default = {
+    north_virginia = "10.0.0.0/16"
+    ireland        = "10.1.0.0/16"
+  }
+}
 
 # Definition of the VPCs to create in N. Virginia Region
 variable "nvirginia_spoke_vpcs" {
