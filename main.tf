@@ -73,8 +73,9 @@ module "hub_spoke_nvirginia" {
 # Spoke VPCs
 module "nvirginia_spoke_vpcs" {
   for_each = var.nvirginia_spoke_vpcs
-  source   = "aws-ia/vpc/aws"
-  version  = "= 3.0.0"
+  # source   = "aws-ia/vpc/aws"
+  # version  = "= 3.0.0"
+  source = "git::https://github.com/pablo19sc/terraform-aws-vpc"
   providers = {
     aws   = aws.awsnvirginia
     awscc = awscc.awsccnvirginia
@@ -240,8 +241,9 @@ module "hub_spoke_ireland" {
 # Spoke VPCs
 module "ireland_spoke_vpcs" {
   for_each = var.ireland_spoke_vpcs
-  source   = "aws-ia/vpc/aws"
-  version  = "= 3.0.0"
+  # source   = "aws-ia/vpc/aws"
+  # version  = "= 3.0.0"
+  source = "git::https://github.com/pablo19sc/terraform-aws-vpc"
   providers = {
     aws   = aws.awsireland
     awscc = awscc.awsccireland
