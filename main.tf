@@ -7,11 +7,13 @@
 
 # Hub and Spoke architecture
 module "hub_spoke_nvirginia" {
-  source = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
   providers = {
     aws   = aws.awsnvirginia
     awscc = awscc.awsccnvirginia
   }
+
+  source = "aws-ia/network-hubandspoke/aws"
+  version = "1.0.1"
 
   identifier = var.identifier
   transit_gateway_attributes = {
@@ -73,13 +75,13 @@ module "hub_spoke_nvirginia" {
 # Spoke VPCs
 module "nvirginia_spoke_vpcs" {
   for_each = var.nvirginia_spoke_vpcs
-  # source   = "aws-ia/vpc/aws"
-  # version  = "= 3.0.0"
-  source = "git::https://github.com/pablo19sc/terraform-aws-vpc"
   providers = {
     aws   = aws.awsnvirginia
     awscc = awscc.awsccnvirginia
   }
+
+  source   = "aws-ia/vpc/aws"
+  version  = "= 3.0.1"
 
   name       = "${each.key}-us-east-1"
   cidr_block = each.value.cidr_block
@@ -175,11 +177,13 @@ module "nvirginia_phz" {
 
 # Hub and Spoke architecture
 module "hub_spoke_ireland" {
-  source = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
   providers = {
     aws   = aws.awsireland
     awscc = awscc.awsccireland
   }
+
+  source = "aws-ia/network-hubandspoke/aws"
+  version = "1.0.1"
 
   identifier = var.identifier
   transit_gateway_attributes = {
@@ -241,13 +245,13 @@ module "hub_spoke_ireland" {
 # Spoke VPCs
 module "ireland_spoke_vpcs" {
   for_each = var.ireland_spoke_vpcs
-  # source   = "aws-ia/vpc/aws"
-  # version  = "= 3.0.0"
-  source = "git::https://github.com/pablo19sc/terraform-aws-vpc"
   providers = {
     aws   = aws.awsireland
     awscc = awscc.awsccireland
   }
+
+  source   = "aws-ia/vpc/aws"
+  version  = "= 3.0.1"
 
   name       = "${each.key}-eu-west-1"
   cidr_block = each.value.cidr_block
