@@ -1,10 +1,10 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- root/firewall_policy_ireland.tf ---
+# --- root/firewall_policy_stockholm.tf ---
 
-resource "aws_networkfirewall_firewall_policy" "ireland_anfw_policy" {
-  provider = aws.awsireland
+resource "aws_networkfirewall_firewall_policy" "stockholm_anfw_policy" {
+  provider = aws.awsstockholm
 
   name = "firewall-policy-${var.identifier}"
 
@@ -16,7 +16,7 @@ resource "aws_networkfirewall_firewall_policy" "ireland_anfw_policy" {
 
     stateless_rule_group_reference {
       priority     = 10
-      resource_arn = aws_networkfirewall_rule_group.ireland_drop_remote.arn
+      resource_arn = aws_networkfirewall_rule_group.stockholm_drop_remote.arn
     }
 
     # Stateful configuration
@@ -26,14 +26,14 @@ resource "aws_networkfirewall_firewall_policy" "ireland_anfw_policy" {
     stateful_default_actions = ["aws:drop_strict", "aws:alert_strict"]
     stateful_rule_group_reference {
       priority     = 20
-      resource_arn = aws_networkfirewall_rule_group.ireland_allow_domains.arn
+      resource_arn = aws_networkfirewall_rule_group.stockholm_allow_domains.arn
     }
   }
 }
 
 # Stateless Rule Group - Dropping any SSH or RDP connection
-resource "aws_networkfirewall_rule_group" "ireland_drop_remote" {
-  provider = aws.awsireland
+resource "aws_networkfirewall_rule_group" "stockholm_drop_remote" {
+  provider = aws.awsstockholm
 
   capacity = 2
   name     = "drop-remote-${var.identifier}"
@@ -87,8 +87,8 @@ resource "aws_networkfirewall_rule_group" "ireland_drop_remote" {
 }
 
 # Stateful Rule Group - Allowing access to .amazon.com (HTTPS)
-resource "aws_networkfirewall_rule_group" "ireland_allow_domains" {
-  provider = aws.awsireland
+resource "aws_networkfirewall_rule_group" "stockholm_allow_domains" {
+  provider = aws.awsstockholm
 
   capacity = 100
   name     = "allow-domains-${var.identifier}"

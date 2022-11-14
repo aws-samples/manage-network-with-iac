@@ -3,7 +3,7 @@
 
 # --- root/locals.tf ---
 locals {
-  north_virginia = {
+  oregon = {
     security_groups = {
       instance = {
         name        = "instance_security_group"
@@ -54,27 +54,27 @@ locals {
 
     endpoint_service_names = {
       ssm = {
-        name        = "com.amazonaws.${var.aws_regions.north_virginia}.ssm"
+        name        = "com.amazonaws.${var.aws_regions.oregon}.ssm"
         type        = "Interface"
         private_dns = false
-        phz_name    = "ssm.${var.aws_regions.north_virginia}.amazonaws.com"
+        phz_name    = "ssm.${var.aws_regions.oregon}.amazonaws.com"
       }
       ssmmessages = {
-        name        = "com.amazonaws.${var.aws_regions.north_virginia}.ssmmessages"
+        name        = "com.amazonaws.${var.aws_regions.oregon}.ssmmessages"
         type        = "Interface"
         private_dns = false
-        phz_name    = "ssmmessages.${var.aws_regions.north_virginia}.amazonaws.com"
+        phz_name    = "ssmmessages.${var.aws_regions.oregon}.amazonaws.com"
       }
       ec2messages = {
-        name        = "com.amazonaws.${var.aws_regions.north_virginia}.ec2messages"
+        name        = "com.amazonaws.${var.aws_regions.oregon}.ec2messages"
         type        = "Interface"
         private_dns = false
-        phz_name    = "ec2messages.${var.aws_regions.north_virginia}.amazonaws.com"
+        phz_name    = "ec2messages.${var.aws_regions.oregon}.amazonaws.com"
       }
     }
   }
 
-  ireland = {
+  stockholm = {
     security_groups = {
       instance = {
         name        = "instance_security_group"
@@ -125,22 +125,22 @@ locals {
 
     endpoint_service_names = {
       ssm = {
-        name        = "com.amazonaws.${var.aws_regions.ireland}.ssm"
+        name        = "com.amazonaws.${var.aws_regions.stockholm}.ssm"
         type        = "Interface"
         private_dns = false
-        phz_name    = "ssm.${var.aws_regions.ireland}.amazonaws.com"
+        phz_name    = "ssm.${var.aws_regions.stockholm}.amazonaws.com"
       }
       ssmmessages = {
-        name        = "com.amazonaws.${var.aws_regions.ireland}.ssmmessages"
+        name        = "com.amazonaws.${var.aws_regions.stockholm}.ssmmessages"
         type        = "Interface"
         private_dns = false
-        phz_name    = "ssmmessages.${var.aws_regions.ireland}.amazonaws.com"
+        phz_name    = "ssmmessages.${var.aws_regions.stockholm}.amazonaws.com"
       }
       ec2messages = {
-        name        = "com.amazonaws.${var.aws_regions.ireland}.ec2messages"
+        name        = "com.amazonaws.${var.aws_regions.stockholm}.ec2messages"
         type        = "Interface"
         private_dns = false
-        phz_name    = "ec2messages.${var.aws_regions.ireland}.amazonaws.com"
+        phz_name    = "ec2messages.${var.aws_regions.stockholm}.amazonaws.com"
       }
     }
   }

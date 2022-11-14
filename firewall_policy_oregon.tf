@@ -1,10 +1,10 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- root/firewall_policy_nvirginia.tf ---
+# --- root/firewall_policy_oregon.tf ---
 
-resource "aws_networkfirewall_firewall_policy" "nvirginia_anfw_policy" {
-  provider = aws.awsnvirginia
+resource "aws_networkfirewall_firewall_policy" "oregon_anfw_policy" {
+  provider = aws.awsoregon
 
   name = "firewall-policy-${var.identifier}"
 
@@ -16,7 +16,7 @@ resource "aws_networkfirewall_firewall_policy" "nvirginia_anfw_policy" {
 
     stateless_rule_group_reference {
       priority     = 10
-      resource_arn = aws_networkfirewall_rule_group.nvirginia_drop_remote.arn
+      resource_arn = aws_networkfirewall_rule_group.oregon_drop_remote.arn
     }
 
     # Stateful configuration
@@ -26,14 +26,14 @@ resource "aws_networkfirewall_firewall_policy" "nvirginia_anfw_policy" {
     stateful_default_actions = ["aws:drop_strict", "aws:alert_strict"]
     stateful_rule_group_reference {
       priority     = 20
-      resource_arn = aws_networkfirewall_rule_group.nvirginia_allow_domains.arn
+      resource_arn = aws_networkfirewall_rule_group.oregon_allow_domains.arn
     }
   }
 }
 
 # Stateless Rule Group - Dropping any SSH or RDP connection
-resource "aws_networkfirewall_rule_group" "nvirginia_drop_remote" {
-  provider = aws.awsnvirginia
+resource "aws_networkfirewall_rule_group" "oregon_drop_remote" {
+  provider = aws.awsoregon
 
   capacity = 2
   name     = "drop-remote-${var.identifier}"
@@ -87,8 +87,8 @@ resource "aws_networkfirewall_rule_group" "nvirginia_drop_remote" {
 }
 
 # Stateful Rule Group - Allowing access to .amazon.com (HTTPS)
-resource "aws_networkfirewall_rule_group" "nvirginia_allow_domains" {
-  provider = aws.awsnvirginia
+resource "aws_networkfirewall_rule_group" "oregon_allow_domains" {
+  provider = aws.awsoregon
 
   capacity = 100
   name     = "allow-domains-${var.identifier}"

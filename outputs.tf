@@ -3,38 +3,38 @@
 
 # --- root/outputs.tf ---
 
-output "nvriginia" {
-  description = "Resources deployed in North Virginia (us-east-1)."
+output "oregon" {
+  description = "Resources deployed in Oregon (us-west-2)."
   value = {
-    transit_gateway_id  = module.hub_spoke_nvirginia.transit_gateway.id
-    network_prefix_list = aws_ec2_managed_prefix_list.nvirginia_network.id
-    spoke_vpcs          = { for k, v in module.nvirginia_spoke_vpcs : k => v.vpc_attributes.id }
-    central_vpcs        = { for k, v in module.hub_spoke_nvirginia.central_vpcs : k => v.vpc_attributes.id }
+    transit_gateway_id  = module.hub_spoke_oregon.transit_gateway.id
+    network_prefix_list = aws_ec2_managed_prefix_list.oregon_network.id
+    spoke_vpcs          = { for k, v in module.oregon_spoke_vpcs : k => v.vpc_attributes.id }
+    central_vpcs        = { for k, v in module.hub_spoke_oregon.central_vpcs : k => v.vpc_attributes.id }
     transit_gateway_route_tables = {
-      spoke_vpcs   = { for k, v in module.hub_spoke_nvirginia.transit_gateway_route_tables.spoke_vpcs : k => v.id }
-      central_vpcs = { for k, v in module.hub_spoke_nvirginia.transit_gateway_route_tables.central_vpcs : k => v.id }
+      spoke_vpcs   = { for k, v in module.hub_spoke_oregon.transit_gateway_route_tables.spoke_vpcs : k => v.id }
+      central_vpcs = { for k, v in module.hub_spoke_oregon.transit_gateway_route_tables.central_vpcs : k => v.id }
     }
-    network_firewall_id  = module.hub_spoke_nvirginia.aws_network_firewall.id
-    ec2_instances        = { for k, v in module.nvirginia_compute : k => v.ec2_instances.*.id }
-    vpc_endpoints        = module.nvirginia_vpc_endpoints.endpoint_ids
-    private_hosted_zones = module.nvirginia_phz.private_hosted_zones
+    network_firewall_id  = module.hub_spoke_oregon.aws_network_firewall.id
+    ec2_instances        = { for k, v in module.oregon_compute : k => v.ec2_instances.*.id }
+    vpc_endpoints        = module.oregon_vpc_endpoints.endpoint_ids
+    private_hosted_zones = module.oregon_phz.private_hosted_zones
   }
 }
 
-output "ireland" {
-  description = "Resources deployed in Ireland (eu-west-1)."
+output "stockholm" {
+  description = "Resources deployed in Stockholm (eu-north-1)."
   value = {
-    transit_gateway_id  = module.hub_spoke_ireland.transit_gateway.id
-    network_prefix_list = aws_ec2_managed_prefix_list.ireland_network.id
-    spoke_vpcs          = { for k, v in module.ireland_spoke_vpcs : k => v.vpc_attributes.id }
-    central_vpcs        = { for k, v in module.hub_spoke_ireland.central_vpcs : k => v.vpc_attributes.id }
+    transit_gateway_id  = module.hub_spoke_stockholm.transit_gateway.id
+    network_prefix_list = aws_ec2_managed_prefix_list.stockholm_network.id
+    spoke_vpcs          = { for k, v in module.stockholm_spoke_vpcs : k => v.vpc_attributes.id }
+    central_vpcs        = { for k, v in module.hub_spoke_stockholm.central_vpcs : k => v.vpc_attributes.id }
     transit_gateway_route_tables = {
-      spoke_vpcs   = { for k, v in module.hub_spoke_ireland.transit_gateway_route_tables.spoke_vpcs : k => v.id }
-      central_vpcs = { for k, v in module.hub_spoke_ireland.transit_gateway_route_tables.central_vpcs : k => v.id }
+      spoke_vpcs   = { for k, v in module.hub_spoke_stockholm.transit_gateway_route_tables.spoke_vpcs : k => v.id }
+      central_vpcs = { for k, v in module.hub_spoke_stockholm.transit_gateway_route_tables.central_vpcs : k => v.id }
     }
-    network_firewall_id  = module.hub_spoke_ireland.aws_network_firewall.id
-    ec2_instances        = { for k, v in module.ireland_compute : k => v.ec2_instances.*.id }
-    vpc_endpoints        = module.ireland_vpc_endpoints.endpoint_ids
-    private_hosted_zones = module.ireland_phz.private_hosted_zones
+    network_firewall_id  = module.hub_spoke_stockholm.aws_network_firewall.id
+    ec2_instances        = { for k, v in module.stockholm_compute : k => v.ec2_instances.*.id }
+    vpc_endpoints        = module.stockholm_vpc_endpoints.endpoint_ids
+    private_hosted_zones = module.stockholm_phz.private_hosted_zones
   }
 }

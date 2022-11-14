@@ -17,8 +17,8 @@ variable "aws_regions" {
   description = "AWS regions to spin up resources."
 
   default = {
-    north_virginia = "us-east-1"
-    ireland        = "eu-west-1"
+    oregon    = "us-west-2"
+    stockholm = "eu-north-1"
   }
 }
 
@@ -28,8 +28,8 @@ variable "transit_gateway_asn" {
   description = "Amazon Side ASNs to apply in the Transit Gateways."
 
   default = {
-    north_virginia = 65050
-    ireland        = 65051
+    oregon    = 65050
+    stockholm = 65051
   }
 }
 
@@ -39,15 +39,15 @@ variable "supernet" {
   description = "AWS Region Supernet CIDR blocks."
 
   default = {
-    north_virginia = "10.0.0.0/16"
-    ireland        = "10.1.0.0/16"
+    oregon    = "10.0.0.0/16"
+    stockholm = "10.1.0.0/16"
   }
 }
 
-# Definition of the VPCs to create in N. Virginia Region
-variable "nvirginia_spoke_vpcs" {
+# Definition of the VPCs to create in Oregon Region
+variable "oregon_spoke_vpcs" {
   type        = any
-  description = "Information about the VPCs to create in us-east-1."
+  description = "Information about the VPCs to create in us-west-2."
 
   default = {
     "non-prod" = {
@@ -69,10 +69,10 @@ variable "nvirginia_spoke_vpcs" {
   }
 }
 
-# Definition of the VPCs to create in Ireland Region
-variable "ireland_spoke_vpcs" {
+# Definition of the VPCs to create in Stockholm Region
+variable "stockholm_spoke_vpcs" {
   type        = any
-  description = "Information about the VPCs to create in eu-west-1."
+  description = "Information about the VPCs to create in eu-north-1."
 
   default = {
     "non-prod" = {
