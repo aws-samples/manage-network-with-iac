@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-## Mange your AWS Network (multi-region) using Infrastructure as Code
+## Manage your Network sing Infrastructure as Code (Workshop code)
 
 This repository builds two Hub and Spoke architectures using AWS Transit Gateway in the following AWS Regions: Oregon (*us-west-2*) and Stockholm (*eu-north-1*). The purpose of the repository is to show how you can leverage Terraform modules (created and maintained by AWS) to manage at scale your AWS networking infrastructure when working with several VPCs in multi-region environments. The public modules used (published in the Terraform Registry) are the following ones:
 

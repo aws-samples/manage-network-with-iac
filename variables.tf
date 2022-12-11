@@ -8,7 +8,7 @@ variable "identifier" {
   type        = string
   description = "Project Identifier."
 
-  default = "net324"
+  default = "manage-network-iac"
 }
 
 # AWS Regions to use in this example
