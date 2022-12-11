@@ -56,6 +56,7 @@ variable "oregon_spoke_vpcs" {
       cidr_block           = "10.0.1.0/24"
       private_subnet_cidrs = ["10.0.1.0/28", "10.0.1.16/28"]
       tgw_subnet_cidrs     = ["10.0.1.32/28", "10.0.1.48/28"]
+      cwan_subnet_cidrs    = ["10.0.1.64/28", "10.0.1.80/28"]
       instance_type        = "t2.micro"
     }
     "prod" = {
@@ -64,6 +65,7 @@ variable "oregon_spoke_vpcs" {
       cidr_block           = "10.0.0.0/24"
       private_subnet_cidrs = ["10.0.0.0/28", "10.0.0.16/28"]
       tgw_subnet_cidrs     = ["10.0.0.32/28", "10.0.0.48/28"]
+      cwan_subnet_cidrs    = ["10.0.0.64/28", "10.0.0.80/28"]
       instance_type        = "t2.micro"
     }
   }
@@ -81,6 +83,7 @@ variable "stockholm_spoke_vpcs" {
       cidr_block           = "10.1.1.0/24"
       private_subnet_cidrs = ["10.1.1.0/28", "10.1.1.16/28"]
       tgw_subnet_cidrs     = ["10.1.1.32/28", "10.1.1.48/28"]
+      cwan_subnet_cidrs    = ["10.1.1.64/28", "10.1.1.80/28"]
       instance_type        = "t3.micro"
     }
     "prod" = {
@@ -89,6 +92,7 @@ variable "stockholm_spoke_vpcs" {
       cidr_block           = "10.1.0.0/24"
       private_subnet_cidrs = ["10.1.0.0/28", "10.1.0.16/28"]
       tgw_subnet_cidrs     = ["10.1.0.32/28", "10.1.0.48/28"]
+      cwan_subnet_cidrs    = ["10.1.0.64/28", "10.1.0.80/28"]
       instance_type        = "t3.micro"
     }
   }
