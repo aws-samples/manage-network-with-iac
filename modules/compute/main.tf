@@ -4,11 +4,11 @@
 # --- examples/central_shared_services/modules/compute/main.tf ---
 
 resource "aws_security_group" "instance_sg" {
-  name        = var.ec2_security_group.name
-  description = var.ec2_security_group.description
+  name        = local.security_group.name
+  description = local.security_group.description
   vpc_id      = var.vpc_id
   dynamic "ingress" {
-    for_each = var.ec2_security_group.ingress
+    for_each = local.security_group.ingress
     content {
       description = ingress.value.description
       from_port   = ingress.value.from
@@ -19,7 +19,7 @@ resource "aws_security_group" "instance_sg" {
   }
 
   dynamic "egress" {
-    for_each = var.ec2_security_group.egress
+    for_each = local.security_group.egress
     content {
       description = egress.value.description
       from_port   = egress.value.from

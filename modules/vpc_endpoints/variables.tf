@@ -1,7 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- examples/central_shared_services/modules/vpc_endpoints/variables.tf ---
+# --- modules/vpc_endpoints/variables.tf ---
 
 variable "identifier" {
   description = "Project identifier."
@@ -18,17 +18,22 @@ variable "vpc_id" {
   description = "ID of the VPC to create the endpoint(s)."
 }
 
+variable "vpc_cidr" {
+  type        = string
+  description = "CIDR block of the VPC."
+}
+
 variable "vpc_subnets" {
   type        = list(string)
   description = "List of the subnets to place the endpoint(s)."
 }
 
-variable "endpoints_security_group" {
-  type        = any
-  description = "Information about the Security Groups to create - for the VPC endpoints."
+variable "endpoint_names" {
+  type        = list(string)
+  description = "VPC endpoint service names."
 }
 
-variable "endpoints_service_names" {
-  type        = any
-  description = "Information about the VPC endpoints to create."
+variable "private_dns" {
+  type        = bool
+  description = "Indicating if the Interface endpoint"
 }

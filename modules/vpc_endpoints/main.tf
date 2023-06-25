@@ -1,28 +1,31 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- examples/central_shared_services/modules/vpc_endpoints/main.tf ---
+# --- modules/vpc_endpoints/main.tf ---
+
+# Current AWS Region
+data "aws_region" "region" {}
 
 # VPC ENDPOINTS
 resource "aws_vpc_endpoint" "endpoint" {
-  for_each = var.endpoints_service_names
+  for_each = toset(var.endpoint_names)
 
   vpc_id              = var.vpc_id
-  service_name        = each.value.name
-  vpc_endpoint_type   = each.value.type
+  service_name        = "com.amazonaws.${data.aws_region.region.name}.${each.value}"
+  vpc_endpoint_type   = "Interface"
   subnet_ids          = var.vpc_subnets
   security_group_ids  = [aws_security_group.endpoints_vpc_sg.id]
-  private_dns_enabled = each.value.private_dns
+  private_dns_enabled = var.private_dns
 }
 
 # VPC ENDPOINTS SECURITY GROUPS
 resource "aws_security_group" "endpoints_vpc_sg" {
-  name        = var.endpoints_security_group.name
-  description = var.endpoints_security_group.description
+  name        = local.security_group.name
+  description = local.security_group.description
   vpc_id      = var.vpc_id
 
   dynamic "ingress" {
-    for_each = var.endpoints_security_group.ingress
+    for_each = local.security_group.ingress
     content {
       description = ingress.value.description
       from_port   = ingress.value.from
@@ -33,7 +36,7 @@ resource "aws_security_group" "endpoints_vpc_sg" {
   }
 
   dynamic "egress" {
-    for_each = var.endpoints_security_group.egress
+    for_each = local.security_group.egress
     content {
       description = egress.value.description
       from_port   = egress.value.from
