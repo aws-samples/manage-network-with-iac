@@ -22,6 +22,14 @@ module "oregon_vpc" {
   vpc_assign_generated_ipv6_cidr_block = true
   az_count                             = each.value.number_azs
 
+  transit_gateway_id = module.oregon_hubspoke.transit_gateway.id
+  transit_gateway_routes = {
+    workload = "0.0.0.0/0"
+  }
+  transit_gateway_ipv6_routes = {
+    workload = "::/0"
+  }
+
   subnets = {
     workload = {
       cidrs            = each.value.ipv4_workload_subnet_cidrs
@@ -30,6 +38,12 @@ module "oregon_vpc" {
     endpoint = {
       cidrs            = each.value.ipv4_endpoint_subnet_cidrs
       assign_ipv6_cidr = true
+    }
+    transit_gateway = {
+      cidrs                                           = each.value.ipv4_tgw_subnet_cidrs
+      assign_ipv6_cidr                                = true
+      transit_gateway_default_route_table_propagation = false
+      transit_gateway_default_route_table_association = false
     }
   }
 }
@@ -64,6 +78,33 @@ module "oregon_vpc_endpoints" {
   private_dns    = true
 }
 
+# AWS Hub and Spoke environment
+module "oregon_hubspoke" {
+  source    = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
+  providers = { aws = aws.awsoregon }
+
+  identifier = var.identifier
+  transit_gateway_attributes = {
+    name            = "tgw-oregon"
+    description     = "Transit Gateway - Oregon"
+    amazon_side_asn = 65000
+  }
+  network_definition = {
+    type  = "CIDR"
+    value = "10.0.0.0/16"
+  }
+
+  spoke_vpcs = {
+    routing_domains = ["prod", "nonprod"]
+    number_vpcs     = length(var.vpcs.oregon)
+    vpc_information = { for k, v in module.oregon_vpc : k => {
+      vpc_id                        = v.vpc_attributes.id
+      transit_gateway_attachment_id = v.transit_gateway_attachment_id
+      routing_domain                = var.vpcs.oregon[k].routing_domain
+    } }
+  }
+}
+
 # ---------- STOCKHOLM (us-west-2) ENVIRONMENT ----------
 # Amazon VPCs
 module "stockholm_vpc" {
@@ -77,6 +118,14 @@ module "stockholm_vpc" {
   vpc_assign_generated_ipv6_cidr_block = true
   az_count                             = each.value.number_azs
 
+  transit_gateway_id = module.stockholm_hubspoke.transit_gateway.id
+  transit_gateway_routes = {
+    workload = "0.0.0.0/0"
+  }
+  transit_gateway_ipv6_routes = {
+    workload = "::/0"
+  }
+
   subnets = {
     workload = {
       cidrs            = each.value.ipv4_workload_subnet_cidrs
@@ -85,6 +134,12 @@ module "stockholm_vpc" {
     endpoint = {
       cidrs            = each.value.ipv4_endpoint_subnet_cidrs
       assign_ipv6_cidr = true
+    }
+    transit_gateway = {
+      cidrs                                           = each.value.ipv4_tgw_subnet_cidrs
+      assign_ipv6_cidr                                = true
+      transit_gateway_default_route_table_propagation = false
+      transit_gateway_default_route_table_association = false
     }
   }
 }
@@ -117,6 +172,33 @@ module "stockholm_vpc_endpoints" {
   vpc_subnets    = values({ for k, v in each.value.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "endpoint" })
   endpoint_names = local.endpoint_names
   private_dns    = true
+}
+
+# AWS Hub and Spoke environment
+module "stockholm_hubspoke" {
+  source    = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
+  providers = { aws = aws.awsstockholm }
+
+  identifier = var.identifier
+  transit_gateway_attributes = {
+    name            = "tgw-stockholm"
+    description     = "Transit Gateway - Stockholm"
+    amazon_side_asn = 65001
+  }
+  network_definition = {
+    type  = "CIDR"
+    value = "10.1.0.0/16"
+  }
+
+  spoke_vpcs = {
+    routing_domains = ["prod", "nonprod"]
+    number_vpcs     = length(var.vpcs.stockholm)
+    vpc_information = { for k, v in module.stockholm_vpc : k => {
+      vpc_id                        = v.vpc_attributes.id
+      transit_gateway_attachment_id = v.transit_gateway_attachment_id
+      routing_domain                = var.vpcs.stockholm[k].routing_domain
+    } }
+  }
 }
 
 # ---------- GLOBAL RESOURCES ----------
