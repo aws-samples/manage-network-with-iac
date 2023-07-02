@@ -14,6 +14,6 @@ variable "endpoint_dns" {
 }
 
 variable "endpoint_service_names" {
-  type        = any
+  type        = list(string)
   description = "Information about the PHZs to create."
 }

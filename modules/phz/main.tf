@@ -3,10 +3,13 @@
 
 # --- examples/central_shared_services/modules/phz/main.tf ---
 
+# Current AWS Region
+data "aws_region" "region" {}
+
 # PRIVATE HOSTED ZONES
 resource "aws_route53_zone" "private_hosted_zone" {
-  for_each = var.endpoint_service_names
-  name     = each.value.phz_name
+  for_each = toset(var.endpoint_service_names)
+  name     = "${each.value}.${data.aws_region.region.name}.amazonaws.com"
 
   dynamic "vpc" {
     for_each = var.vpc_ids
@@ -18,7 +21,7 @@ resource "aws_route53_zone" "private_hosted_zone" {
 
 # DNS RECORDS POINTING TO THE VPC ENDPOINTS
 resource "aws_route53_record" "endpoint_record" {
-  for_each = var.endpoint_service_names
+  for_each = toset(var.endpoint_service_names)
   zone_id  = aws_route53_zone.private_hosted_zone[each.key].id
   name     = ""
   type     = "A"

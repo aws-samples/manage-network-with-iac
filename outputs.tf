@@ -6,8 +6,14 @@
 output "vpcs" {
   description = "VPCs created."
   value = {
-    oregon    = { for k, v in module.oregon_vpc : k => v.vpc_attributes.id }
-    stockholm = { for k, v in module.stockholm_vpc : k => v.vpc_attributes.id }
+    oregon = {
+      spokes  = { for k, v in module.oregon_vpc : k => v.vpc_attributes.id }
+      central = { for k, v in module.oregon_hubspoke.central_vpcs : k => v.vpc_attributes.id }
+    }
+    stockholm = {
+      spokes  = { for k, v in module.stockholm_vpc : k => v.vpc_attributes.id }
+      central = { for k, v in module.stockholm_hubspoke.central_vpcs : k => v.vpc_attributes.id }
+    }
   }
 }
 

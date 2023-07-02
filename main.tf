@@ -64,18 +64,27 @@ module "oregon_compute" {
 }
 
 # VPC endpoints 
-module "oregon_vpc_endpoints" {
+module "oregon_central_endpoints" {
   source    = "./modules/vpc_endpoints"
   providers = { aws = aws.awsoregon }
-  for_each  = module.oregon_vpc
 
   identifier     = var.identifier
-  vpc_name       = each.key
-  vpc_id         = each.value.vpc_attributes.id
-  vpc_cidr       = var.vpcs.oregon[each.key].ipv4_cidr_block
-  vpc_subnets    = values({ for k, v in each.value.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "endpoint" })
+  vpc_name       = "shared-services-vpc"
+  vpc_id         = module.oregon_hubspoke.central_vpcs.shared_services.vpc_attributes.id
+  vpc_cidr       = "10.0.0.0/16"
+  vpc_subnets    = values({ for k, v in module.oregon_hubspoke.central_vpcs.shared_services.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "endpoints" })
   endpoint_names = local.endpoint_names
-  private_dns    = true
+  private_dns    = false
+}
+
+# Private Hosted Zone (Shared Services VPC endpoints)
+module "oregon_phz" {
+  source    = "./modules/phz"
+  providers = { aws = aws.awsoregon }
+
+  vpc_ids                = { for k, v in module.oregon_vpc : k => v.vpc_attributes.id }
+  endpoint_dns           = module.oregon_central_endpoints.endpoint_dns
+  endpoint_service_names = local.endpoint_names
 }
 
 # AWS Hub and Spoke environment
@@ -92,6 +101,19 @@ module "oregon_hubspoke" {
   network_definition = {
     type  = "CIDR"
     value = "10.0.0.0/16"
+  }
+
+  central_vpcs = {
+    shared_services = {
+      name       = "shared-services-vpc"
+      cidr_block = var.central_vpcs.oregon.shared_services.ipv4_cidr_block
+      az_count   = var.central_vpcs.oregon.shared_services.number_azs
+
+      subnets = {
+        endpoints       = { netmask = var.central_vpcs.oregon.shared_services.ipv4_endpoint_subnet_netmask }
+        transit_gateway = { netmask = var.central_vpcs.oregon.shared_services.ipv4_tgw_subnet_netmask }
+      }
+    }
   }
 
   spoke_vpcs = {
@@ -160,18 +182,27 @@ module "stockholm_compute" {
 }
 
 # VPC endpoints 
-module "stockholm_vpc_endpoints" {
+module "stockholm_central_endpoints" {
   source    = "./modules/vpc_endpoints"
   providers = { aws = aws.awsstockholm }
-  for_each  = module.stockholm_vpc
 
   identifier     = var.identifier
-  vpc_name       = each.key
-  vpc_id         = each.value.vpc_attributes.id
-  vpc_cidr       = var.vpcs.oregon[each.key].ipv4_cidr_block
-  vpc_subnets    = values({ for k, v in each.value.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "endpoint" })
+  vpc_name       = "shared-services-vpc"
+  vpc_id         = module.stockholm_hubspoke.central_vpcs.shared_services.vpc_attributes.id
+  vpc_cidr       = "10.1.0.0/16"
+  vpc_subnets    = values({ for k, v in module.stockholm_hubspoke.central_vpcs.shared_services.private_subnet_attributes_by_az : split("/", k)[1] => v.id if split("/", k)[0] == "endpoints" })
   endpoint_names = local.endpoint_names
-  private_dns    = true
+  private_dns    = false
+}
+
+# Private Hosted Zone (Shared Services VPC endpoints)
+module "stockholm_phz" {
+  source    = "./modules/phz"
+  providers = { aws = aws.awsstockholm }
+
+  vpc_ids                = { for k, v in module.stockholm_vpc : k => v.vpc_attributes.id }
+  endpoint_dns           = module.stockholm_central_endpoints.endpoint_dns
+  endpoint_service_names = local.endpoint_names
 }
 
 # AWS Hub and Spoke environment
@@ -188,6 +219,19 @@ module "stockholm_hubspoke" {
   network_definition = {
     type  = "CIDR"
     value = "10.1.0.0/16"
+  }
+
+  central_vpcs = {
+    shared_services = {
+      name       = "shared-services-vpc"
+      cidr_block = var.central_vpcs.stockholm.shared_services.ipv4_cidr_block
+      az_count   = var.central_vpcs.stockholm.shared_services.number_azs
+
+      subnets = {
+        endpoints       = { netmask = var.central_vpcs.stockholm.shared_services.ipv4_endpoint_subnet_netmask }
+        transit_gateway = { netmask = var.central_vpcs.stockholm.shared_services.ipv4_tgw_subnet_netmask }
+      }
+    }
   }
 
   spoke_vpcs = {

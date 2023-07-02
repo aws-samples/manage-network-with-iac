@@ -88,3 +88,28 @@ variable "vpcs" {
     }
   }
 }
+
+# Central VPCs information
+variable "central_vpcs" {
+  description = "Central VPCs to create."
+  type        = any
+
+  default = {
+    oregon = {
+      shared_services = {
+        number_azs                   = 2
+        ipv4_cidr_block              = "10.20.0.0/24"
+        ipv4_endpoint_subnet_netmask = 28
+        ipv4_tgw_subnet_netmask      = 28
+      }
+    }
+    stockholm = {
+      shared_services = {
+        number_azs                   = 2
+        ipv4_cidr_block              = "10.20.1.0/24"
+        ipv4_endpoint_subnet_netmask = 28
+        ipv4_tgw_subnet_netmask      = 28
+      }
+    }
+  }
+}
