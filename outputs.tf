@@ -2,31 +2,3 @@
 # SPDX-License-Identifier: MIT-0
 
 # --- root/outputs.tf ---
-
-output "vpcs" {
-  description = "VPCs created."
-  value = {
-    oregon = {
-      spokes  = { for k, v in module.oregon_vpc : k => v.vpc_attributes.id }
-      central = { for k, v in module.oregon_hubspoke.central_vpcs : k => v.vpc_attributes.id }
-    }
-    stockholm = {
-      spokes  = { for k, v in module.stockholm_vpc : k => v.vpc_attributes.id }
-      central = { for k, v in module.stockholm_hubspoke.central_vpcs : k => v.vpc_attributes.id }
-    }
-  }
-}
-
-output "hub_and_spoke" {
-  description = "Hub and Spoke information."
-  value = {
-    oregon = {
-      transit_gateway              = module.oregon_hubspoke.transit_gateway.id
-      transit_gateway_route_tables = { for k, v in module.oregon_hubspoke.transit_gateway_route_tables.spoke_vpcs : k => v.id }
-    }
-    stockholm = {
-      transit_gateway              = module.stockholm_hubspoke.transit_gateway.id
-      transit_gateway_route_tables = { for k, v in module.stockholm_hubspoke.transit_gateway_route_tables.spoke_vpcs : k => v.id }
-    }
-  }
-}

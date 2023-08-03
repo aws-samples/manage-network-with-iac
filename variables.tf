@@ -8,7 +8,7 @@ variable "identifier" {
   description = "Project identifier."
   type        = string
 
-  default = "NET"
+  default = "manage-network-iac"
 }
 
 # AWS Regions
@@ -18,7 +18,6 @@ variable "aws_regions" {
 
   default = {
     oregon    = "us-west-2"
-    stockholm = "eu-central-1"
   }
 }
 
@@ -30,85 +29,12 @@ variable "vpcs" {
   default = {
     oregon = {
       vpc1 = {
-        routing_domain             = "prod"
-        number_azs                 = 2
-        ipv4_cidr_block            = "10.0.0.0/24"
-        ipv4_workload_subnet_cidrs = ["10.0.0.0/28", "10.0.0.16/28"]
-        ipv4_endpoint_subnet_cidrs = ["10.0.0.32/28", "10.0.0.48/28"]
-        ipv4_tgw_subnet_cidrs      = ["10.0.0.64/28", "10.0.0.80/28"]
-        instance_type              = "t2.micro"
-      }
-      vpc2 = {
-        routing_domain             = "prod"
-        number_azs                 = 2
-        ipv4_cidr_block            = "10.0.1.0/24"
-        ipv4_workload_subnet_cidrs = ["10.0.1.0/28", "10.0.1.16/28"]
-        ipv4_endpoint_subnet_cidrs = ["10.0.1.32/28", "10.0.1.48/28"]
-        ipv4_tgw_subnet_cidrs      = ["10.0.1.64/28", "10.0.1.80/28"]
-        instance_type              = "t2.micro"
-      }
-      vpc3 = {
-        routing_domain             = "nonprod"
-        number_azs                 = 2
-        ipv4_cidr_block            = "10.0.2.0/24"
-        ipv4_workload_subnet_cidrs = ["10.0.2.0/28", "10.0.2.16/28"]
-        ipv4_endpoint_subnet_cidrs = ["10.0.2.32/28", "10.0.2.48/28"]
-        ipv4_tgw_subnet_cidrs      = ["10.0.2.64/28", "10.0.2.80/28"]
-        instance_type              = "t2.micro"
-      }
-    }
-    stockholm = {
-      vpc1 = {
-        routing_domain             = "prod"
-        number_azs                 = 2
-        ipv4_cidr_block            = "10.1.0.0/24"
-        ipv4_workload_subnet_cidrs = ["10.1.0.0/28", "10.1.0.16/28"]
-        ipv4_endpoint_subnet_cidrs = ["10.1.0.32/28", "10.1.0.48/28"]
-        ipv4_tgw_subnet_cidrs      = ["10.1.0.64/28", "10.1.0.80/28"]
-        instance_type              = "t3.micro"
-      }
-      vpc2 = {
-        routing_domain             = "nonprod"
-        number_azs                 = 2
-        ipv4_cidr_block            = "10.1.1.0/24"
-        ipv4_workload_subnet_cidrs = ["10.1.1.0/28", "10.1.1.16/28"]
-        ipv4_endpoint_subnet_cidrs = ["10.1.1.32/28", "10.1.1.48/28"]
-        ipv4_tgw_subnet_cidrs      = ["10.1.1.64/28", "10.1.1.80/28"]
-        instance_type              = "t3.micro"
-      }
-      vpc3 = {
-        routing_domain             = "nonprod"
-        number_azs                 = 2
-        ipv4_cidr_block            = "10.1.2.0/24"
-        ipv4_workload_subnet_cidrs = ["10.1.2.0/28", "10.1.2.16/28"]
-        ipv4_endpoint_subnet_cidrs = ["10.1.2.32/28", "10.1.2.48/28"]
-        ipv4_tgw_subnet_cidrs      = ["10.1.2.64/28", "10.1.2.80/28"]
-        instance_type              = "t3.micro"
-      }
-    }
-  }
-}
-
-# Central VPCs information
-variable "central_vpcs" {
-  description = "Central VPCs to create."
-  type        = any
-
-  default = {
-    oregon = {
-      shared_services = {
-        number_azs                   = 2
-        ipv4_cidr_block              = "10.20.0.0/24"
-        ipv4_endpoint_subnet_netmask = 28
-        ipv4_tgw_subnet_netmask      = 28
-      }
-    }
-    stockholm = {
-      shared_services = {
-        number_azs                   = 2
-        ipv4_cidr_block              = "10.20.1.0/24"
-        ipv4_endpoint_subnet_netmask = 28
-        ipv4_tgw_subnet_netmask      = 28
+        number_azs             = 2
+        cidr_block             = "10.0.0.0/24"
+        workload_subnet_cidrs  = ["10.0.0.0/28", "10.0.0.16/28"]
+        endpoints_subnet_cidrs = ["10.0.0.32/28", "10.0.0.48/28"]
+        cwan_subnet_cidrs      = ["10.0.0.96/28", "10.0.0.112/28"]
+        instance_type          = "t2.micro"
       }
     }
   }
