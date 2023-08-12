@@ -8,7 +8,7 @@ variable "identifier" {
   description = "Project identifier."
   type        = string
 
-  default = "manage-network-iac"
+  default = "net303"
 }
 
 # AWS Regions
@@ -18,6 +18,7 @@ variable "aws_regions" {
 
   default = {
     oregon    = "us-west-2"
+    stockholm = "eu-north-1"
   }
 }
 
@@ -29,13 +30,74 @@ variable "vpcs" {
   default = {
     oregon = {
       vpc1 = {
+        routing_domain         = "prod"
         number_azs             = 2
         cidr_block             = "10.0.0.0/24"
         workload_subnet_cidrs  = ["10.0.0.0/28", "10.0.0.16/28"]
         endpoints_subnet_cidrs = ["10.0.0.32/28", "10.0.0.48/28"]
-        cwan_subnet_cidrs      = ["10.0.0.96/28", "10.0.0.112/28"]
+        tgw_subnet_cidrs       = ["10.0.0.64/28", "10.0.0.80/28"]
+        instance_type          = "t2.micro"
+      }
+      vpc2 = {
+        routing_domain         = "prod"
+        number_azs             = 2
+        cidr_block             = "10.0.1.0/24"
+        workload_subnet_cidrs  = ["10.0.1.0/28", "10.0.1.16/28"]
+        endpoints_subnet_cidrs = ["10.0.1.32/28", "10.0.1.48/28"]
+        tgw_subnet_cidrs       = ["10.0.1.64/28", "10.0.1.80/28"]
+        instance_type          = "t2.micro"
+      }
+      vpc3 = {
+        routing_domain         = "nonprod"
+        number_azs             = 2
+        cidr_block             = "10.0.2.0/24"
+        workload_subnet_cidrs  = ["10.0.2.0/28", "10.0.2.16/28"]
+        endpoints_subnet_cidrs = ["10.0.2.32/28", "10.0.2.48/28"]
+        tgw_subnet_cidrs       = ["10.0.2.64/28", "10.0.2.80/28"]
         instance_type          = "t2.micro"
       }
     }
+    stockholm = {
+      vpc1 = {
+        routing_domain         = "prod"
+        number_azs             = 2
+        cidr_block             = "10.1.0.0/24"
+        workload_subnet_cidrs  = ["10.1.0.0/28", "10.1.0.16/28"]
+        endpoints_subnet_cidrs = ["10.1.0.32/28", "10.1.0.48/28"]
+        tgw_subnet_cidrs       = ["10.1.0.64/28", "10.1.0.80/28"]
+        instance_type          = "t3.micro"
+      }
+      vpc2 = {
+        routing_domain         = "nonprod"
+        number_azs             = 2
+        cidr_block             = "10.1.1.0/24"
+        workload_subnet_cidrs  = ["10.1.1.0/28", "10.1.1.16/28"]
+        endpoints_subnet_cidrs = ["10.1.1.32/28", "10.1.1.48/28"]
+        tgw_subnet_cidrs       = ["10.1.1.64/28", "10.1.1.80/28"]
+        instance_type          = "t3.micro"
+      }
+    }
   }
+}
+
+# Inspection VPC information
+variable "inspection_vpc" {
+  description = "Inspection VPC parameters."
+  type        = map(any)
+
+  default = {
+    number_azs               = 2
+    cidr_block               = "10.100.0.0/24"
+    public_subnet_netmask    = 28
+    endpoints_subnet_netmask = 28
+    tgw_subnet_netmask       = 28
+  }
+}
+
+# Routing domains
+variable "routing_domains" {
+  description = "Routing domains."
+  type        = list(string)
+
+  default = ["prod", "nonprod", "shared"]
 }

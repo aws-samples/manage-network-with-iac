@@ -1,7 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- root/firewall_policy.tf ---
+# --- root/peering.tf ---
 
 # ---------- TRANSIT GATEWAY PEERING ----------
 # Peering request (us-west-2)
@@ -182,4 +182,3 @@ resource "aws_ec2_transit_gateway_prefix_list_reference" "stockholm_nonprod_to_o
   prefix_list_id                 = module.prefix_lists.oregon_prefix_lists.prod
   transit_gateway_route_table_id = module.stockholm_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
 }
-
