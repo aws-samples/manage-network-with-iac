@@ -18,3 +18,8 @@ provider "aws" {
   region = var.aws_regions.oregon
   alias  = "awsoregon"
 }
+
+provider "aws" {
+  region = var.aws_regions.stockholm
+  alias  = "awsstockholm"
+}
