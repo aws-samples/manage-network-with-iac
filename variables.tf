@@ -91,6 +91,7 @@ variable "inspection_vpc" {
     public_subnet_netmask    = 28
     endpoints_subnet_netmask = 28
     tgw_subnet_netmask       = 28
+    cwan_subnet_netmask      = 28
   }
 }
 
