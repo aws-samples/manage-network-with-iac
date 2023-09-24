@@ -102,10 +102,10 @@ resource "aws_networkfirewall_rule_group" "oregon_allow_domains" {
   }
 }
 
-# ---------- FIREWALL POLICY STOCKHOLM (eu-north-1) ----------
+# ---------- FIREWALL POLICY TOKYO (ap-northeast-1) ----------
 # Firewall policy
-resource "aws_networkfirewall_firewall_policy" "stockholm_anfw_policy" {
-  provider = aws.awsstockholm
+resource "aws_networkfirewall_firewall_policy" "tokyo_anfw_policy" {
+  provider = aws.awstokyo
 
   name = "firewall-policy-${var.identifier}"
 
@@ -117,7 +117,7 @@ resource "aws_networkfirewall_firewall_policy" "stockholm_anfw_policy" {
 
     stateless_rule_group_reference {
       priority     = 10
-      resource_arn = aws_networkfirewall_rule_group.stockholm_drop_remote.arn
+      resource_arn = aws_networkfirewall_rule_group.tokyo_drop_remote.arn
     }
 
     # Stateful configuration
@@ -127,14 +127,14 @@ resource "aws_networkfirewall_firewall_policy" "stockholm_anfw_policy" {
     stateful_default_actions = ["aws:drop_strict", "aws:alert_strict"]
     stateful_rule_group_reference {
       priority     = 20
-      resource_arn = aws_networkfirewall_rule_group.stockholm_allow_domains.arn
+      resource_arn = aws_networkfirewall_rule_group.tokyo_allow_domains.arn
     }
   }
 }
 
 # Stateless Rule Group - Dropping any SSH connection
-resource "aws_networkfirewall_rule_group" "stockholm_drop_remote" {
-  provider = aws.awsstockholm
+resource "aws_networkfirewall_rule_group" "tokyo_drop_remote" {
+  provider = aws.awstokyo
 
   capacity = 2
   name     = "drop-remote-${var.identifier}"
@@ -172,8 +172,8 @@ resource "aws_networkfirewall_rule_group" "stockholm_drop_remote" {
 }
 
 # Stateful Rule Group - Allowing access to .amazon.com (HTTPS)
-resource "aws_networkfirewall_rule_group" "stockholm_allow_domains" {
-  provider = aws.awsstockholm
+resource "aws_networkfirewall_rule_group" "tokyo_allow_domains" {
+  provider = aws.awstokyo
 
   capacity = 10
   name     = "allow-domains-${var.identifier}"
@@ -184,7 +184,7 @@ resource "aws_networkfirewall_rule_group" "stockholm_allow_domains" {
       ip_sets {
         key = "VPCS"
         ip_set {
-          definition = values({ for k, v in var.vpcs.stockholm : k => v.cidr_block })
+          definition = values({ for k, v in var.vpcs.tokyo : k => v.cidr_block })
         }
       }
     }

@@ -6,7 +6,8 @@
 # ---------- OREGON (us-west-2) ENVIRONMENT ----------
 # AWS Hub and Spoke environment
 module "oregon_hubspoke" {
-  source    = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
+  source    = "aws-ia/network-hubandspoke/aws"
+  version   = "3.0.2"
   providers = { aws = aws.awsoregon }
 
   identifier = var.identifier
@@ -28,8 +29,9 @@ module "oregon_hubspoke" {
 
       inspection_flow = "north-south"
       aws_network_firewall = {
-        name       = "ANFW-${var.identifier}"
-        policy_arn = aws_networkfirewall_firewall_policy.oregon_anfw_policy.id
+        name        = "ANFW-${var.identifier}"
+        description = "AWS Network Firewall - ${var.identifier}"
+        policy_arn  = aws_networkfirewall_firewall_policy.oregon_anfw_policy.id
       }
 
       subnets = {
@@ -91,16 +93,17 @@ module "oregon_compute" {
   ec2_iam_instance_profile = module.iam.ec2_iam_instance_profile
 }
 
-# ---------- STOCKHOLM (us-west-2) ENVIRONMENT ----------
+# ---------- TOKYO (ap-northeast-1) ENVIRONMENT ----------
 # AWS Hub and Spoke environment
-module "stockholm_hubspoke" {
-  source    = "git::https://github.com/pablo19sc/terraform-aws-network-hubandspoke"
-  providers = { aws = aws.awsstockholm }
+module "tokyo_hubspoke" {
+  source    = "aws-ia/network-hubandspoke/aws"
+  version   = "3.0.2"
+  providers = { aws = aws.awstokyo }
 
   identifier = var.identifier
   transit_gateway_attributes = {
-    name            = "tgw-stockholm"
-    description     = "Transit Gateway - Stockholm"
+    name            = "tgw-tokyo"
+    description     = "Transit Gateway - Tokyo"
     amazon_side_asn = 65001
   }
   network_definition = {
@@ -116,8 +119,9 @@ module "stockholm_hubspoke" {
 
       inspection_flow = "north-south"
       aws_network_firewall = {
-        name       = "ANFW-${var.identifier}"
-        policy_arn = aws_networkfirewall_firewall_policy.stockholm_anfw_policy.id
+        name        = "ANFW-${var.identifier}"
+        description = "AWS Network Firewall - ${var.identifier}"
+        policy_arn  = aws_networkfirewall_firewall_policy.tokyo_anfw_policy.id
       }
 
       subnets = {
@@ -130,27 +134,27 @@ module "stockholm_hubspoke" {
 
   spoke_vpcs = {
     routing_domains = ["prod", "nonprod"]
-    number_vpcs     = length(var.vpcs.stockholm)
-    vpc_information = { for k, v in module.stockholm_vpcs : k => {
+    number_vpcs     = length(var.vpcs.tokyo)
+    vpc_information = { for k, v in module.tokyo_vpcs : k => {
       vpc_id                        = v.vpc_attributes.id
       transit_gateway_attachment_id = v.transit_gateway_attachment_id
-      routing_domain                = var.vpcs.stockholm[k].routing_domain
+      routing_domain                = var.vpcs.tokyo[k].routing_domain
     } }
   }
 }
 
 # Amazon VPCs
-module "stockholm_vpcs" {
+module "tokyo_vpcs" {
   source    = "aws-ia/vpc/aws"
   version   = "4.3.0"
-  providers = { aws = aws.awsstockholm }
-  for_each  = var.vpcs.stockholm
+  providers = { aws = aws.awstokyo }
+  for_each  = var.vpcs.tokyo
 
   name       = each.key
   cidr_block = each.value.cidr_block
   az_count   = each.value.number_azs
 
-  transit_gateway_id = module.stockholm_hubspoke.transit_gateway.id
+  transit_gateway_id = module.tokyo_hubspoke.transit_gateway.id
   transit_gateway_routes = {
     workload = "0.0.0.0/0"
   }
@@ -167,15 +171,15 @@ module "stockholm_vpcs" {
 }
 
 # EC2 instances
-module "stockholm_compute" {
+module "tokyo_compute" {
   source    = "./modules/compute"
-  providers = { aws = aws.awsstockholm }
-  for_each  = module.stockholm_vpcs
+  providers = { aws = aws.awstokyo }
+  for_each  = module.tokyo_vpcs
 
   identifier               = var.identifier
   vpc_name                 = each.key
   vpc                      = each.value
-  vpc_information          = var.vpcs.stockholm[each.key]
+  vpc_information          = var.vpcs.tokyo[each.key]
   ec2_iam_instance_profile = module.iam.ec2_iam_instance_profile
 }
 

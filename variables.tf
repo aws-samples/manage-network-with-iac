@@ -17,8 +17,8 @@ variable "aws_regions" {
   type        = map(string)
 
   default = {
-    oregon    = "us-west-2"
-    stockholm = "eu-north-1"
+    oregon = "us-west-2"
+    tokyo  = "ap-northeast-1"
   }
 }
 
@@ -57,7 +57,7 @@ variable "vpcs" {
         instance_type          = "t2.micro"
       }
     }
-    stockholm = {
+    tokyo = {
       vpc1 = {
         routing_domain         = "prod"
         number_azs             = 2

@@ -8,18 +8,18 @@
 resource "aws_ec2_transit_gateway_peering_attachment" "tgw_peering" {
   provider = aws.awsoregon
 
-  peer_region             = var.aws_regions.stockholm
-  peer_transit_gateway_id = module.stockholm_hubspoke.transit_gateway.id
+  peer_region             = var.aws_regions.tokyo
+  peer_transit_gateway_id = module.tokyo_hubspoke.transit_gateway.id
   transit_gateway_id      = module.oregon_hubspoke.transit_gateway.id
 
   tags = {
-    Name = "tgw-peering-${var.aws_regions.stockholm}"
+    Name = "tgw-peering-${var.aws_regions.tokyo}"
   }
 }
 
-# Peering accepter (eu-north-1)
+# Peering accepter (ap-northeast-1)
 resource "aws_ec2_transit_gateway_peering_attachment_accepter" "tgw_peering_accepter" {
-  provider = aws.awsstockholm
+  provider = aws.awstokyo
 
   transit_gateway_attachment_id = aws_ec2_transit_gateway_peering_attachment.tgw_peering.id
 
@@ -58,12 +58,12 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "oregon_tgw_rt_peerin
   transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.oregon_tgw_rt_peering.id
 }
 
-# ---------- TRANSIT GATEWAY RESOURCES (eu-north-1) ----------
+# ---------- TRANSIT GATEWAY RESOURCES (ap-northeast-1) ----------
 # Route table & association
-resource "aws_ec2_transit_gateway_route_table" "stockholm_tgw_rt_peering" {
-  provider = aws.awsstockholm
+resource "aws_ec2_transit_gateway_route_table" "tokyo_tgw_rt_peering" {
+  provider = aws.awstokyo
 
-  transit_gateway_id = module.stockholm_hubspoke.transit_gateway.id
+  transit_gateway_id = module.tokyo_hubspoke.transit_gateway.id
 
   tags = {
     Name = "peering-rt"
@@ -72,20 +72,20 @@ resource "aws_ec2_transit_gateway_route_table" "stockholm_tgw_rt_peering" {
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.tgw_peering_accepter]
 }
 
-resource "aws_ec2_transit_gateway_route_table_association" "stockholm_tgw_rt_peering_assoc" {
-  provider = aws.awsstockholm
+resource "aws_ec2_transit_gateway_route_table_association" "tokyo_tgw_rt_peering_assoc" {
+  provider = aws.awstokyo
 
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.tgw_peering.id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.stockholm_tgw_rt_peering.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.tokyo_tgw_rt_peering.id
 }
 
 # Propagation - Spoke VPCs to peering route table
-resource "aws_ec2_transit_gateway_route_table_propagation" "stockholm_tgw_rt_peering_prop" {
-  provider = aws.awsstockholm
-  for_each = module.stockholm_vpcs
+resource "aws_ec2_transit_gateway_route_table_propagation" "tokyo_tgw_rt_peering_prop" {
+  provider = aws.awstokyo
+  for_each = module.tokyo_vpcs
 
   transit_gateway_attachment_id  = each.value.transit_gateway_attachment_id
-  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.stockholm_tgw_rt_peering.id
+  transit_gateway_route_table_id = aws_ec2_transit_gateway_route_table.tokyo_tgw_rt_peering.id
 }
 
 # ---------- PREFIX LISTS ----------
@@ -93,92 +93,92 @@ resource "aws_ec2_transit_gateway_route_table_propagation" "stockholm_tgw_rt_pee
 module "prefix_lists" {
   source = "./modules/prefix_lists"
   providers = {
-    aws.awsoregon    = aws.awsoregon
-    aws.awsstockholm = aws.awsstockholm
+    aws.awsoregon = aws.awsoregon
+    aws.awstokyo  = aws.awstokyo
   }
 
-  oregon_vpcs    = var.vpcs.oregon
-  stockholm_vpcs = var.vpcs.stockholm
+  oregon_vpcs = var.vpcs.oregon
+  tokyo_vpcs  = var.vpcs.tokyo
 }
 
 # ---------- TRANSIT GATEWAY STATIC ROUTES (us-west-2) ----------
-# Static route - Oregon Prod to Stockholm Prod (via peering)
-resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_to_stockholm_prod" {
+# Static route - Oregon Prod to Tokyo Prod (via peering)
+resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_to_tokyo_prod" {
   provider = aws.awsoregon
 
-  prefix_list_id                 = module.prefix_lists.stockholm_prefix_lists.prod
+  prefix_list_id                 = module.prefix_lists.tokyo_prefix_lists.prod
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.tgw_peering.id
   transit_gateway_route_table_id = module.oregon_hubspoke.transit_gateway_route_tables.spoke_vpcs.prod.id
 
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.tgw_peering_accepter]
 }
 
-# Static route - Oregon Non-Prod to Stockholm Non-Prod (via peering)
-resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_to_stockholm_nonprod" {
+# Static route - Oregon Non-Prod to Tokyo Non-Prod (via peering)
+resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_to_tokyo_nonprod" {
   provider = aws.awsoregon
 
-  prefix_list_id                 = module.prefix_lists.stockholm_prefix_lists.nonprod
+  prefix_list_id                 = module.prefix_lists.tokyo_prefix_lists.nonprod
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.tgw_peering.id
   transit_gateway_route_table_id = module.oregon_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
 
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.tgw_peering_accepter]
 }
 
-# Blackhole route - Oregon Prod to Stockholm Non-prod
-resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_prod_to_stockholm_nonprod_blackhole" {
+# Blackhole route - Oregon Prod to Tokyo Non-prod
+resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_prod_to_tokyo_nonprod_blackhole" {
   provider = aws.awsoregon
 
   blackhole                      = true
-  prefix_list_id                 = module.prefix_lists.stockholm_prefix_lists.nonprod
+  prefix_list_id                 = module.prefix_lists.tokyo_prefix_lists.nonprod
   transit_gateway_route_table_id = module.oregon_hubspoke.transit_gateway_route_tables.spoke_vpcs.prod.id
 }
 
-# Blackhole route - Oregon Non-prod to Stockholm prod
-resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_nonprod_to_stockholm_prod_blackhole" {
+# Blackhole route - Oregon Non-prod to Tokyo prod
+resource "aws_ec2_transit_gateway_prefix_list_reference" "oregon_nonprod_to_tokyo_prod_blackhole" {
   provider = aws.awsoregon
 
   blackhole                      = true
-  prefix_list_id                 = module.prefix_lists.stockholm_prefix_lists.prod
+  prefix_list_id                 = module.prefix_lists.tokyo_prefix_lists.prod
   transit_gateway_route_table_id = module.oregon_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
 }
 
 # ---------- TRANSIT GATEWAY STATIC ROUTES (eu-north-1) ----------
-# Static route - Stockholm Prod to Oregon Prod (via peering)
-resource "aws_ec2_transit_gateway_prefix_list_reference" "stockholm_to_oregon_prod" {
-  provider = aws.awsstockholm
+# Static route - Tokyo Prod to Oregon Prod (via peering)
+resource "aws_ec2_transit_gateway_prefix_list_reference" "tokyo_to_oregon_prod" {
+  provider = aws.awstokyo
 
   prefix_list_id                 = module.prefix_lists.oregon_prefix_lists.prod
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.tgw_peering.id
-  transit_gateway_route_table_id = module.stockholm_hubspoke.transit_gateway_route_tables.spoke_vpcs.prod.id
+  transit_gateway_route_table_id = module.tokyo_hubspoke.transit_gateway_route_tables.spoke_vpcs.prod.id
 
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.tgw_peering_accepter]
 }
 
-# Static route - Stockholm Non-Prod to Oregon Non-Prod (via peering)
-resource "aws_ec2_transit_gateway_prefix_list_reference" "stockholm_to_oregon_nonprod" {
-  provider = aws.awsstockholm
+# Static route - Tokyo Non-Prod to Oregon Non-Prod (via peering)
+resource "aws_ec2_transit_gateway_prefix_list_reference" "tokyo_to_oregon_nonprod" {
+  provider = aws.awstokyo
 
   prefix_list_id                 = module.prefix_lists.oregon_prefix_lists.nonprod
   transit_gateway_attachment_id  = aws_ec2_transit_gateway_peering_attachment.tgw_peering.id
-  transit_gateway_route_table_id = module.stockholm_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
+  transit_gateway_route_table_id = module.tokyo_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
 
   depends_on = [aws_ec2_transit_gateway_peering_attachment_accepter.tgw_peering_accepter]
 }
 
-# Blackhole route - Stockholm Prod to Oregon Non-prod
-resource "aws_ec2_transit_gateway_prefix_list_reference" "stockholm_prod_to_oregon_nonprod_blackhole" {
-  provider = aws.awsstockholm
+# Blackhole route - Tokyo Prod to Oregon Non-prod
+resource "aws_ec2_transit_gateway_prefix_list_reference" "tokyo_prod_to_oregon_nonprod_blackhole" {
+  provider = aws.awstokyo
 
   blackhole                      = true
   prefix_list_id                 = module.prefix_lists.oregon_prefix_lists.nonprod
-  transit_gateway_route_table_id = module.stockholm_hubspoke.transit_gateway_route_tables.spoke_vpcs.prod.id
+  transit_gateway_route_table_id = module.tokyo_hubspoke.transit_gateway_route_tables.spoke_vpcs.prod.id
 }
 
-# Blackhole route - Stockholm Non-prod to Oregon prod
-resource "aws_ec2_transit_gateway_prefix_list_reference" "stockholm_nonprod_to_oregon_prod_blackhole" {
-  provider = aws.awsstockholm
+# Blackhole route - Tokyo Non-prod to Oregon prod
+resource "aws_ec2_transit_gateway_prefix_list_reference" "tokyo_nonprod_to_oregon_prod_blackhole" {
+  provider = aws.awstokyo
 
   blackhole                      = true
   prefix_list_id                 = module.prefix_lists.oregon_prefix_lists.prod
-  transit_gateway_route_table_id = module.stockholm_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
+  transit_gateway_route_table_id = module.tokyo_hubspoke.transit_gateway_route_tables.spoke_vpcs.nonprod.id
 }

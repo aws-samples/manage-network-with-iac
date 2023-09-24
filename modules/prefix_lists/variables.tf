@@ -8,8 +8,8 @@ variable "oregon_vpcs" {
   type        = map(any)
 }
 
-variable "stockholm_vpcs" {
-  description = "Oregon (us-west-2) VPC information."
+variable "tokyo_vpcs" {
+  description = "Tokyo (ap-northeast-1) VPC information."
   type        = map(any)
 }
 

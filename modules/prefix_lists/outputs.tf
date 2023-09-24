@@ -11,10 +11,10 @@ output "oregon_prefix_lists" {
   }
 }
 
-output "stockholm_prefix_lists" {
-  description = "Oregon (us-west-2) prefix lists."
+output "tokyo_prefix_lists" {
+  description = "Tokyo (ap-northeast-1) prefix lists."
   value = {
-    prod    = aws_ec2_managed_prefix_list.stockholm_prod_ipv4.id
-    nonprod = aws_ec2_managed_prefix_list.stockholm_nonprod_ipv4.id
+    prod    = aws_ec2_managed_prefix_list.tokyo_prod_ipv4.id
+    nonprod = aws_ec2_managed_prefix_list.tokyo_nonprod_ipv4.id
   }
 }

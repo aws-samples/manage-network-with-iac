@@ -20,6 +20,6 @@ provider "aws" {
 }
 
 provider "aws" {
-  region = var.aws_regions.stockholm
-  alias  = "awsstockholm"
+  region = var.aws_regions.tokyo
+  alias  = "awstokyo"
 }

@@ -9,7 +9,7 @@ terraform {
     aws = {
       source                = "hashicorp/aws"
       version               = "= 4.67.0"
-      configuration_aliases = [aws.awsoregon, aws.awsstockholm]
+      configuration_aliases = [aws.awsoregon, aws.awstokyo]
     }
   }
 }
