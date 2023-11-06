@@ -7,7 +7,7 @@
 # AWS Hub and Spoke environment
 module "oregon_hubspoke" {
   source    = "aws-ia/network-hubandspoke/aws"
-  version   = "3.0.2"
+  version   = "3.2.0"
   providers = { aws = aws.awsoregon }
 
   identifier = var.identifier
@@ -56,7 +56,7 @@ module "oregon_hubspoke" {
 # Amazon VPCs
 module "oregon_vpcs" {
   source    = "aws-ia/vpc/aws"
-  version   = "4.3.0"
+  version   = "4.4.1"
   providers = { aws = aws.awsoregon }
   for_each  = var.vpcs.oregon
 
@@ -76,6 +76,8 @@ module "oregon_vpcs" {
       cidrs                                           = each.value.tgw_subnet_cidrs
       transit_gateway_default_route_table_propagation = false
       transit_gateway_default_route_table_association = false
+
+      tags = { domain = each.value.routing_domain }
     }
   }
 }
@@ -97,7 +99,7 @@ module "oregon_compute" {
 # AWS Hub and Spoke environment
 module "tokyo_hubspoke" {
   source    = "aws-ia/network-hubandspoke/aws"
-  version   = "3.0.2"
+  version   = "3.2.0"
   providers = { aws = aws.awstokyo }
 
   identifier = var.identifier
@@ -146,7 +148,7 @@ module "tokyo_hubspoke" {
 # Amazon VPCs
 module "tokyo_vpcs" {
   source    = "aws-ia/vpc/aws"
-  version   = "4.3.0"
+  version   = "4.4.1"
   providers = { aws = aws.awstokyo }
   for_each  = var.vpcs.tokyo
 
@@ -166,6 +168,8 @@ module "tokyo_vpcs" {
       cidrs                                           = each.value.tgw_subnet_cidrs
       transit_gateway_default_route_table_propagation = false
       transit_gateway_default_route_table_association = false
+
+      tags = { domain = each.value.routing_domain }
     }
   }
 }
