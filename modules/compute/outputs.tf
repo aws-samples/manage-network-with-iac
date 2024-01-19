@@ -8,7 +8,7 @@ output "ec2_instances" {
   description = "List of instances created."
 }
 
-output "endpoint_ids" {
-  value       = { for k, v in aws_vpc_endpoint.endpoint : k => v.id }
-  description = "VPC Endpoints information."
+output "eic_endpoint" {
+  value       = aws_ec2_instance_connect_endpoint.eic_endpoint.id
+  description = "EC2 Instance Connect Endpoint."
 }

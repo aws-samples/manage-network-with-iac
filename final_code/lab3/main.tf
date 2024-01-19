@@ -55,9 +55,9 @@ module "oregon_network_firewall" {
   version   = "1.0.0"
   providers = { aws = aws.awsoregon }
 
-  network_firewall_name   = "anfw-${var.aws_regions.oregon}"
+  network_firewall_name        = "anfw-${var.aws_regions.oregon}"
   network_firewall_description = "AWS Network Firewall - ${var.aws_regions.oregon}"
-  network_firewall_policy = aws_networkfirewall_firewall_policy.oregon_anfw_policy.arn
+  network_firewall_policy      = aws_networkfirewall_firewall_policy.oregon_anfw_policy.arn
 
   vpc_id      = module.oregon_inspection.vpc_attributes.id
   number_azs  = var.inspection_vpc.number_azs
@@ -65,9 +65,9 @@ module "oregon_network_firewall" {
 
   routing_configuration = {
     centralized_inspection_with_egress = {
-      connectivity_subnet_route_tables    = { for k, v in module.oregon_inspection.rt_attributes_by_type_by_az.core_network : k => v.id }
-      public_subnet_route_tables          = { for k, v in module.oregon_inspection.rt_attributes_by_type_by_az.public : k => v.id }
-      network_cidr_blocks                 = values({ for k, v in var.vpcs.oregon : k => v.cidr_block })
+      connectivity_subnet_route_tables = { for k, v in module.oregon_inspection.rt_attributes_by_type_by_az.core_network : k => v.id }
+      public_subnet_route_tables       = { for k, v in module.oregon_inspection.rt_attributes_by_type_by_az.public : k => v.id }
+      network_cidr_blocks              = values({ for k, v in var.vpcs.oregon : k => v.cidr_block })
     }
   }
 }

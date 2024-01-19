@@ -17,7 +17,7 @@ variable "aws_regions" {
   type        = map(string)
 
   default = {
-    oregon    = "us-west-2"
+    oregon = "us-west-2"
   }
 }
 
