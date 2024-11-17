@@ -1,14 +1,14 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- root/variables.tf ---
+# --- spoke_account/variables.tf ---
 
 # Project identifier
 variable "identifier" {
   type        = string
   description = "Project Identifier."
 
-  default = "manage-network-iac"
+  default = "manage-network-iac-spoke"
 }
 
 # AWS Regions to use in this example
@@ -17,30 +17,8 @@ variable "aws_regions" {
   description = "AWS regions to spin up resources."
 
   default = {
-    oregon    = "us-west-2"
-    stockholm = "eu-north-1"
-  }
-}
-
-# Amazon Side ASNs to use in the Transit Gateways
-variable "transit_gateway_asn" {
-  type        = map(string)
-  description = "Amazon Side ASNs to apply in the Transit Gateways."
-
-  default = {
-    oregon    = 65050
-    stockholm = 65051
-  }
-}
-
-# AWS Region's Supernet CIDR blocks
-variable "supernet" {
-  type        = map(string)
-  description = "AWS Region Supernet CIDR blocks."
-
-  default = {
-    oregon    = "10.0.0.0/16"
-    stockholm = "10.1.0.0/16"
+    oregon  = "us-west-2"
+    ireland = "eu-west-1"
   }
 }
 
@@ -55,8 +33,6 @@ variable "oregon_spoke_vpcs" {
       number_azs           = 2
       cidr_block           = "10.0.1.0/24"
       private_subnet_cidrs = ["10.0.1.0/28", "10.0.1.16/28"]
-      tgw_subnet_cidrs     = ["10.0.1.32/28", "10.0.1.48/28"]
-      cwan_subnet_cidrs    = ["10.0.1.64/28", "10.0.1.80/28"]
       instance_type        = "t2.micro"
     }
     "prod" = {
@@ -64,17 +40,15 @@ variable "oregon_spoke_vpcs" {
       number_azs           = 2
       cidr_block           = "10.0.0.0/24"
       private_subnet_cidrs = ["10.0.0.0/28", "10.0.0.16/28"]
-      tgw_subnet_cidrs     = ["10.0.0.32/28", "10.0.0.48/28"]
-      cwan_subnet_cidrs    = ["10.0.0.64/28", "10.0.0.80/28"]
       instance_type        = "t2.micro"
     }
   }
 }
 
-# Definition of the VPCs to create in Stockholm Region
-variable "stockholm_spoke_vpcs" {
+# Definition of the VPCs to create in Ireland Region
+variable "ireland_spoke_vpcs" {
   type        = any
-  description = "Information about the VPCs to create in eu-north-1."
+  description = "Information about the VPCs to create in eu-west-1."
 
   default = {
     "non-prod" = {
@@ -82,18 +56,14 @@ variable "stockholm_spoke_vpcs" {
       number_azs           = 2
       cidr_block           = "10.1.1.0/24"
       private_subnet_cidrs = ["10.1.1.0/28", "10.1.1.16/28"]
-      tgw_subnet_cidrs     = ["10.1.1.32/28", "10.1.1.48/28"]
-      cwan_subnet_cidrs    = ["10.1.1.64/28", "10.1.1.80/28"]
-      instance_type        = "t3.micro"
+      instance_type        = "t2.micro"
     }
     "prod" = {
       type                 = "prod"
       number_azs           = 2
       cidr_block           = "10.1.0.0/24"
       private_subnet_cidrs = ["10.1.0.0/28", "10.1.0.16/28"]
-      tgw_subnet_cidrs     = ["10.1.0.32/28", "10.1.0.48/28"]
-      cwan_subnet_cidrs    = ["10.1.0.64/28", "10.1.0.80/28"]
-      instance_type        = "t3.micro"
+      instance_type        = "t2.micro"
     }
   }
 }
