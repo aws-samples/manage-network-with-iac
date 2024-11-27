@@ -13,14 +13,8 @@ terraform {
   }
 }
 
-# Provider definitios for Oregon Region
+# Provider definitions
 provider "aws" {
   region = var.aws_regions.oregon
   alias  = "awsoregon"
-}
-
-# Provider definitios for Ireland Region
-provider "aws" {
-  region = var.aws_regions.ireland
-  alias  = "awsireland"
 }

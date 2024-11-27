@@ -1,7 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-# --- modules/compute/providers.tf ---
+# --- spoke_account/provider.tf ---
 
 terraform {
   required_version = ">= 1.3.0"
@@ -11,4 +11,15 @@ terraform {
       version = ">= 5.0.0"
     }
   }
+}
+
+# Provider definitions
+provider "aws" {
+  region = var.aws_regions.oregon
+  alias  = "awsoregon"
+}
+
+provider "aws" {
+  region = var.aws_regions.ireland
+  alias  = "awsireland"
 }

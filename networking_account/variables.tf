@@ -11,7 +11,7 @@ variable "identifier" {
   default = "manage-network-iac-networking"
 }
 
-# AWS Regions to use in this example
+# AWS Regions to use
 variable "aws_regions" {
   type        = map(string)
   description = "AWS regions to spin up resources."
