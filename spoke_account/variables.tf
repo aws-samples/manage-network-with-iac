@@ -28,12 +28,12 @@ variable "oregon_spoke_vpcs" {
 
   default = {
     "prod" = {
-      type                   = "prod"
-      number_azs             = 2
-      cidr_block             = "10.0.0.0/24"
-      private_subnet_cidrs   = ["10.0.0.0/28", "10.0.0.16/28"]
-      endpoints_subnet_cidrs = ["10.0.0.32/28", "10.0.0.48/28"]
-      instance_type          = "t2.micro"
+      type                  = "prod"
+      number_azs            = 2
+      cidr_block            = "10.0.0.0/24"
+      private_subnet_cidrs  = ["10.0.0.0/28", "10.0.0.16/28"]
+      endpoint_subnet_cidrs = ["10.0.0.32/28", "10.0.0.48/28"]
+      instance_type         = "t2.micro"
     }
   }
 }
